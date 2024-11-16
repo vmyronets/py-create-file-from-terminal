@@ -12,7 +12,7 @@ def create_file(directories: str, file_name: str) -> None:
     with open(full_path, mode) as file:
         if mode == "a":
             file.write("\n\n")
-        file.write(f"{timestamp}")
+        file.write(f"{timestamp}\n")
         while True:
             line = input("Enter content line: ")
             if line.lower().strip() == "stop":
