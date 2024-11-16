@@ -1,5 +1,5 @@
-import argparse
 import os
+import sys
 from datetime import datetime
 
 
@@ -22,23 +22,29 @@ def create_file(directories: str, file_name: str) -> None:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser()
-    parser.add_argument("-d", "--directory", type=str, nargs="*")
-    parser.add_argument("-f", "--filename", type=str)
-    args = parser.parse_args()
-
-    dirs = args.directory
-    file_name = args.filename
-
-    if dirs and file_name:
-        directories = os.path.join(os.getcwd(), *dirs)
-        file_name = file_name
-    if not dirs and file_name:
+    list_of_arguments = sys.argv
+    if "-f" in list_of_arguments and "-d" not in list_of_arguments:
+        file_name = list_of_arguments[list_of_arguments.index("-f") + 1]
         directories = os.getcwd()
-        file_name = file_name
-    if not file_name and dirs:
-        directories = os.path.join(os.getcwd(), *dirs)
-        file_name = "text.txt"
+    elif "-d" in list_of_arguments and "-f" not in list_of_arguments:
+        file_name = "file.txt"
+        directories = os.path.join(
+            os.getcwd(),
+            *list_of_arguments[list_of_arguments.index("-d") + 1:]
+        )
+    elif "-d" in list_of_arguments and "-f" in list_of_arguments:
+        if list_of_arguments.index("-f") > list_of_arguments.index("-d"):
+            directories = os.path.join(
+                os.getcwd(),
+                *list_of_arguments[list_of_arguments.index("-d")
+                                   + 1:list_of_arguments.index("-f")]
+            )
+        else:
+            directories = os.path.join(
+                os.getcwd(),
+                *list_of_arguments[list_of_arguments.index("-d") + 1:]
+            )
+        file_name = list_of_arguments[list_of_arguments.index("-f") + 1]
 
     create_file(directories, file_name)
 
